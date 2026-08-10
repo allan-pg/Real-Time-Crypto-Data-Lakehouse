@@ -1,0 +1,32 @@
+ # Core configuration
+python-dotenv
+
+# Binance WebSocket
+websocket-client
+
+# Confluent Cloud / Apache Kafka
+confluent-kafka[avro]
+
+# AWS S3
+boto3
+botocore
+
+# Data formats / processing
+pandas
+pyarrow
+
+# PostgreSQL
+psycopg2-binary
+SQLAlchemy
+
+# Redis
+redis
+
+# Streamlit dashboard
+streamlit
+
+# Validation / data models
+pydantic
+
+# HTTP/API utilities
+requests

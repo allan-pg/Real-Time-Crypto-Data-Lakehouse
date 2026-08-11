@@ -6,7 +6,6 @@ The platform ingests live cryptocurrency market data from the Binance WebSocket 
 
 Designed using modern data engineering best practices, this project demonstrates event-driven architecture, real-time data streaming, cloud-native data lake design, and scalable analytics.
 
----
 
 # Architecture
 
@@ -14,7 +13,6 @@ Designed using modern data engineering best practices, this project demonstrates
 
 ![Architecture Diagram](diagrams/architecture.png)
 
----
 
 # Technology Stack
 
@@ -32,7 +30,6 @@ Designed using modern data engineering best practices, this project demonstrates
 - AWS IAM
 - Git & GitHub
 
----
 
 # Project Scope
 
@@ -46,7 +43,6 @@ The platform focuses on streaming and analyzing live cryptocurrency market data,
 
 This project simulates a production-grade real-time financial data pipeline using an event-driven architecture.
 
----
 
 # Key Features
 
@@ -65,7 +61,6 @@ This project simulates a production-grade real-time financial data pipeline usin
 - Scalable Cloud-Native Architecture
 - Cost-Optimized Storage and Querying
 
----
 
 # Data Flow
 
@@ -100,7 +95,6 @@ Amazon Athena
 Power BI Dashboards
 ```
 
----
 
 # Architecture Highlights
 

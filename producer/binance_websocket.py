@@ -9,26 +9,19 @@ from confluent_kafka import Producer
 from dotenv import load_dotenv
 
 
-# ---------------------------------------------------------
 # 1. Load environment variables
-# ---------------------------------------------------------
 
 load_dotenv()
 
 
-# ---------------------------------------------------------
 # 2. Logging configuration
-# ---------------------------------------------------------
-
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s"
 )
 
 
-# ---------------------------------------------------------
 # 3. Application configuration
-# ---------------------------------------------------------
 
 KAFKA_BOOTSTRAP_SERVERS = os.getenv(
     "KAFKA_BOOTSTRAP_SERVERS"
@@ -45,9 +38,7 @@ CRYPTO_SYMBOLS = os.getenv(
 ).split(",")
 
 
-# ---------------------------------------------------------
 # 4. Build Binance WebSocket URL
-# ---------------------------------------------------------
 
 streams = "/".join(
     f"{symbol.strip().lower()}@trade"
@@ -59,10 +50,7 @@ BINANCE_WS_URL = (
 )
 
 
-# ---------------------------------------------------------
 # 5. Kafka Producer configuration
-# ---------------------------------------------------------
-
 producer_conf = {
     "bootstrap.servers": KAFKA_BOOTSTRAP_SERVERS,
     "client.id": "crypto-websocket-producer",
@@ -73,10 +61,7 @@ producer_conf = {
 kafka_producer = Producer(producer_conf)
 
 
-# ---------------------------------------------------------
 # 6. Kafka delivery callback
-# ---------------------------------------------------------
-
 def delivery_report(err, msg):
 
     if err is not None:
@@ -95,39 +80,21 @@ def delivery_report(err, msg):
             f"key={msg.key().decode('utf-8')}"
         )
 
-
-# ---------------------------------------------------------
 # 7. Process incoming Binance message
-# ---------------------------------------------------------
 
 def on_message(ws, message):
 
     try:
 
-        # -------------------------------------------------
         # 1. Convert JSON string → Python dictionary
-        # -------------------------------------------------
 
         raw_data = json.loads(message)
 
-        # -------------------------------------------------
+        
         # 2. Extract the actual event data
-        #
-        # Combined Binance streams look like:
-        #
-        # {
-        #     "stream": "btcusdt@trade",
-        #     "data": {
-        #         ...
-        #     }
-        # }
-        # -------------------------------------------------
-
         data = raw_data.get("data", raw_data)
 
-        # -------------------------------------------------
-        # 3. Validate the message
-        # -------------------------------------------------
+       # 3. Validate the message
 
         if not isinstance(data, dict):
             return
@@ -135,10 +102,8 @@ def on_message(ws, message):
         if data.get("e") != "trade":
             return
 
-        # -------------------------------------------------
+       
         # 4. Extract trade fields
-        # -------------------------------------------------
-
         symbol = data.get("s")
         trade_id = data.get("t")
         price = data.get("p")
@@ -147,10 +112,8 @@ def on_message(ws, message):
         trade_time = data.get("T")
         is_buyer_maker = data.get("m")
 
-        # -------------------------------------------------
         # 5. Validate required fields
-        # -------------------------------------------------
-
+        
         if symbol is None:
             return
 
@@ -160,10 +123,8 @@ def on_message(ws, message):
         if quantity is None:
             return
 
-        # -------------------------------------------------
         # 6. Create our standardized event
-        # -------------------------------------------------
-
+        
         payload = {
             "symbol": symbol,
             "trade_id": trade_id,
@@ -175,9 +136,7 @@ def on_message(ws, message):
             "is_buyer_maker": is_buyer_maker,
         }
 
-        # -------------------------------------------------
         # 7. Send event to Kafka
-        # -------------------------------------------------
 
         kafka_producer.produce(
             topic=KAFKA_TOPIC_CRYPTO,
@@ -189,9 +148,8 @@ def on_message(ws, message):
         # Process Kafka delivery callbacks
         kafka_producer.poll(0)
 
-        # -------------------------------------------------
+        
         # 8. Log the event
-        # -------------------------------------------------
 
         logging.info(
             f"Trade streamed | "
@@ -210,9 +168,8 @@ def on_message(ws, message):
 
 
 
-# ---------------------------------------------------------
+
 # 8. WebSocket error handler
-# ---------------------------------------------------------
 
 def on_error(ws, error):
 
@@ -221,9 +178,9 @@ def on_error(ws, error):
     )
 
 
-# ---------------------------------------------------------
+
 # 9. WebSocket close handler
-# ---------------------------------------------------------
+
 
 def on_close(
     ws,
@@ -238,9 +195,9 @@ def on_close(
     )
 
 
-# ---------------------------------------------------------
+
 # 10. WebSocket open handler
-# ---------------------------------------------------------
+
 
 def on_open(ws):
 
@@ -253,9 +210,8 @@ def on_open(ws):
     )
 
 
-# ---------------------------------------------------------
+
 # 11. Start ingestion service
-# ---------------------------------------------------------
 
 def start_ingestion_stream():
 
@@ -314,9 +270,8 @@ def start_ingestion_stream():
         )
 
 
-# ---------------------------------------------------------
+
 # 12. Application entry point
-# ---------------------------------------------------------
 
 if __name__ == "__main__":
 

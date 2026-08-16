@@ -28,13 +28,11 @@ KAFKA_BOOTSTRAP_SERVERS = os.getenv(
 )
 
 KAFKA_TOPIC_CRYPTO = os.getenv(
-    "KAFKA_TOPIC_CRYPTO",
-    "crypto_prices"
+    "KAFKA_TOPIC_CRYPTO"
 )
 
 CRYPTO_SYMBOLS = os.getenv(
-    "CRYPTO_SYMBOLS",
-    "btcusdt,ethusdt"
+    "CRYPTO_SYMBOLS"
 ).split(",")
 
 

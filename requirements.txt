@@ -30,3 +30,4 @@ pydantic
 
 # HTTP/API utilities
 requests
+psycopg[binary]

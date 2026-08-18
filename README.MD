@@ -1,6 +1,6 @@
 # Real-Time Cryptocurrency Streaming Data Platform
 
-A modern real-time streaming data platform built using Apache Kafka, Python, Amazon S3, AWS Glue, Amazon Athena, and Power BI.
+A modern real-time streaming data platform built using Apache Kafka, Flink,Python, Amazon S3.
 
 The platform ingests live cryptocurrency market data from the Binance WebSocket API, streams it through Apache Kafka, processes and validates the data in real time, stores it in an Amazon S3 Data Lake using partitioned Parquet files, automatically catalogs the data with AWS Glue Crawlers, and delivers analytics-ready datasets for querying with Amazon Athena and visualization in Power BI.
 

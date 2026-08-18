@@ -7,6 +7,5 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY producer/binance_websocket.py .
-COPY producer/binance_consumer.py .
 
 CMD ["python", "binance_websocket.py"]

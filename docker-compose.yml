@@ -1,8 +1,6 @@
 services:
 
-  # =========================================================
   # Kafka - KRaft mode
-  # =========================================================
 
   kafka:
     image: apache/kafka:latest
@@ -13,16 +11,12 @@ services:
 
     environment:
 
-      # -----------------------------------------------------
       # KRaft configuration
-      # -----------------------------------------------------
 
       KAFKA_NODE_ID: 1
       KAFKA_PROCESS_ROLES: broker,controller
 
-      # -----------------------------------------------------
       # Listeners
-      # -----------------------------------------------------
 
       KAFKA_LISTENERS: INTERNAL://:29092,EXTERNAL://:9092,CONTROLLER://:9093
 
@@ -36,9 +30,7 @@ services:
 
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
 
-      # -----------------------------------------------------
       # Single-node configuration
-      # -----------------------------------------------------
 
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
 
@@ -50,16 +42,16 @@ services:
 
       KAFKA_NUM_PARTITIONS: 3
 
-    # -------------------------------------------------------
+
     # Persist Kafka data
-    # -------------------------------------------------------
+
 
     volumes:
       - kafka_data:/var/lib/kafka/data
 
-    # -------------------------------------------------------
+
     # Kafka health check
-    # -------------------------------------------------------
+
 
     healthcheck:
       test:
@@ -72,10 +64,7 @@ services:
       retries: 10
       start_period: 20s
 
-
-  # =========================================================
   # Kafka Topic Initialization
-  # =========================================================
 
   kafka-init:
     image: apache/kafka:latest
@@ -97,9 +86,7 @@ services:
       --replication-factor 1"
 
 
-  # =========================================================
   # Binance Producer
-  # =========================================================
 
   producer:
     build:
@@ -118,30 +105,47 @@ services:
     command: python binance_websocket.py
 
 
-  # =========================================================
-  # Kafka Consumer
-  # =========================================================
+  # Apache Flink - JobManager
 
-  consumer:
+  flink-jobmanager:
     build:
-      context: .
-      dockerfile: producer/Dockerfile
+      context: ./flink
+      dockerfile: Dockerfile
 
-    container_name: crypto-consumer
+    container_name: crypto-flink-jobmanager
 
-    env_file:
-      - .env
+    ports:
+      - "8081:8081"
+
+    command: jobmanager
+
+    environment:
+      - JOB_MANAGER_RPC_ADDRESS=flink-jobmanager
 
     depends_on:
       kafka-init:
         condition: service_completed_successfully
 
-    command: python binance_consumer.py
 
+  # Apache Flink - TaskManager
 
-# ===========================================================
+  flink-taskmanager:
+    build:
+      context: ./flink
+      dockerfile: Dockerfile
+
+    container_name: crypto-flink-taskmanager
+
+    command: taskmanager
+
+    environment:
+      - JOB_MANAGER_RPC_ADDRESS=flink-jobmanager
+
+    depends_on:
+      flink-jobmanager:
+        condition: service_started
+
 # Persistent Volumes
-# ===========================================================
 
 volumes:
   kafka_data:

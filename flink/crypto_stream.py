@@ -27,8 +27,7 @@ KAFKA_TOPIC = os.getenv(
 )
 
 KAFKA_CONSUMER_GROUP = os.getenv(
-    "KAFKA_CONSUMER_GROUP",
-    "crypto-flink"
+    "KAFKA_CONSUMER_GROUP"
 )
 
 

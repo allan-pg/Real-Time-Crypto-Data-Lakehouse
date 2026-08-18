@@ -51,7 +51,7 @@ class CryptoTimestampAssigner(TimestampAssigner):
         in milliseconds.
         """
 
-        return int(value[6])
+        return int(value[5])
 
 
 # Main Flink application

@@ -1,8 +1,17 @@
 FROM flink:1.20.1
 
-# Kafka connector for Flink
-RUN wget -P /opt/flink/lib/ \
-    https://repo1.maven.org/maven2/org/apache/flink/flink-sql-connector-kafka/3.3.0-1.20/flink-sql-connector-kafka-3.3.0-1.20.jar
+USER root
 
-# PyFlink
-RUN pip install apache-flink==1.20.1
+# Install Python and pip
+RUN apt-get update \
+    && apt-get install -y python3 python3-pip \
+    && ln -s /usr/bin/python3 /usr/bin/python \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install PyFlink
+RUN python3 -m pip install apache-flink==1.20.1
+
+# Copy Flink application
+COPY crypto_stream.py /opt/flink/usrlib/crypto_stream.py
+
+USER flink
